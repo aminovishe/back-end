@@ -7,6 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = 'products';
+
+    /**
+     * The primary key used by the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'id';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
