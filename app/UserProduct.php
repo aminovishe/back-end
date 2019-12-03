@@ -6,15 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserProduct extends Model
 {
-    protected $guarded = [];
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = 'user_products';
 
-    public function user()
-    {
-        return $this->belongsTo(\App\User::class);
-    }
+    /**
+     * The primary key used by the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'id';
 
-    public function product()
-    {
-        return $this->belongsTo(\App\Product::class);
-    }
+    protected $fillable = [
+        'quantity', 'user_id', 'product_id'
+    ];
 }
