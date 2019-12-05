@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ProductController extends Controller
 {
@@ -14,7 +15,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Product::all());
     }
 
     /**
@@ -35,7 +36,14 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $product = new Product([
+            'label' => $request->get('label'),
+            'price' => $request->get('price'),
+            'quantity' => $request->get('quantity')
+        ]);
+        $product->save();
+
+        return response()->json(['success' => '200']);
     }
 
     /**
