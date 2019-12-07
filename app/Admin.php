@@ -11,6 +11,20 @@ class Admin extends Authenticatable
     use Notifiable;
 
     /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = 'admins';
+
+    /**
+     * The primary key used by the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'id';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
