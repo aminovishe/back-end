@@ -4,10 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Product;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Repositories\Repository;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
+    protected $model;
+
+    public function __construct(Product $product)
+    {
+        $this->model = new Repository($product);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +23,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return response()->json(Product::all());
+        return response()->json($this->model->all());
     }
 
     /**
@@ -36,14 +44,18 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $product = new Product([
-            'label' => $request->get('label'),
-            'price' => $request->get('price'),
-            'quantity' => $request->get('quantity')
+        $validator = Validator::make($request->all(), [
+            'label' => 'required|string|max:255',
+            'quantity' => 'required|numeric',
+            'price' => 'required|numeric'
         ]);
-        $product->save();
 
-        return response()->json(['success' => '200']);
+        if ($validator->fails()) {
+            return response()->json(['error' => 'Formulaire non valide']);
+        }
+
+        $this->model->create($request->only($this->model->getModel()->fillable));
+        return response()->json(['success' => 'Produit ajouté avec succès']);
     }
 
     /**

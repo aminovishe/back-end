@@ -18,5 +18,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['prefix' => 'product'], function () {
-    Route::post('', 'ProductController');
+    Route::post('', 'ProductController@store');
 });
