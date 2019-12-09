@@ -69,13 +69,5 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
-//        Route::group([
-//            'middleware' => ['api', 'cors'],
-//            'namespace' => $this->namespace,
-//            'prefix' => 'product',
-//        ], function ($router) {
-//            //Add you routes here, for example:
-//            Route::apiResource('','ProductController');
-//        });
     }
 }
