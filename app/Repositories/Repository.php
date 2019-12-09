@@ -49,7 +49,7 @@ class Repository implements RepositoryInterface
     // show the record with the given id
     public function show($id)
     {
-        return $this->model-findOrFail($id);
+        return $this->model->findOrFail($id);
     }
 
     // Get the associated model
