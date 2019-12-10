@@ -6,6 +6,7 @@ use App\Product;
 use Illuminate\Http\Request;
 use App\Repositories\Repository;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductController extends Controller
 {
@@ -98,8 +99,16 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        //
+        try {
+            $product = $this->model->show($id);
+        } catch (ModelNotFoundException $ex) {
+            return response()->json(['error' => 'Erreur !!!']);
+        }
+
+        $product->delete();
+        return response()->json(['success' => 'Produit supprimé avec succès']);
+
     }
 }
