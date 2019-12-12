@@ -4,9 +4,19 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use App\Repositories\Repository;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends Controller
 {
+    protected $model;
+
+    public function __construct(User $user)
+    {
+        $this->model = new Repository($user);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -35,7 +45,22 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'email' => 'required|email',
+            'password' => 'required|string|min:8',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => 'Formulaire non valide']);
+        }
+        $existUser = User::where('email', $request->input('email'))->first();
+        if ($existUser){
+            return response()->json(['error' => "L'adresse mail existe déjà"]);
+        } else {
+            $this->model->create($request->only($this->model->getModel()->fillable));
+            return response()->json(['success' => 'Utilisateur ajouté avec succès']);
+        }
     }
 
     /**
