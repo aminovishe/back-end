@@ -103,8 +103,16 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        //
+        try {
+            $user = $this->model->show($id);
+        } catch (ModelNotFoundException $ex) {
+            return response()->json(['error' => 'Erreur !!!']);
+        }
+
+        $user->delete();
+        return response()->json(['success' => 'Utilisateur supprimé avec succès']);
+
     }
 }
