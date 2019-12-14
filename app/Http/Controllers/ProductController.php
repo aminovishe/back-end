@@ -62,12 +62,11 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show($id)
     {
-        //
+        return response()->json($this->model->show($id));
     }
 
     /**
@@ -85,12 +84,27 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'label' => 'required|string|max:255',
+            'quantity' => 'required|numeric',
+            'price' => 'required|numeric'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => 'Formulaire non valide']);
+        }
+
+        $this->model->update([
+            "label" => $request->label,
+            "price" => (float)$request->price,
+            "quantity" => (float)$request->quantity,
+        ],$id);
+
+        return response()->json(['success' => 'Le produit a été modifié avec succès']);
     }
 
     /**
