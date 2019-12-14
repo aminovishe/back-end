@@ -14,13 +14,13 @@ use JWTAuth;
 
 class UserProductsController extends Controller
 {
-    protected $model;
+    protected $userProductRepo;
     protected $auth;
     protected $productRepo;
 
     public function __construct(UserProduct $userProduct, AuthController $authController, Product $product)
     {
-        $this->model = new Repository($userProduct);
+        $this->userProductRepo = new Repository($userProduct);
         $this->productRepo = new Repository($product);
         $this->auth = $authController;
     }
@@ -73,16 +73,14 @@ class UserProductsController extends Controller
                 if (!$product){
                     return response()->json(['error' => 'ProductId Invalid !!']);
                 } else {
-                    $product->quantity = $product->quantity - (float)$request->quantity;
-                    $product->save();
+                    $this->productRepo->decrementQuantity($product,$request->quantity);
+                    $this->userProductRepo->create([
+                        "quantity" => (float)$request->quantity,
+                        "user_id" => $user->original->id,
+                        "product_id" => $request->productId,
+                    ]);
+                    return response()->json(['success' => 'Merci !! Vous avez achetez '. $request->quantity .' pièces avec succès.']);
                 }
-                $userProduct = new UserProduct();
-                $userProduct->setAttribute('quantity',$request->quantity);
-                $userProduct->setAttribute('user_id',$user->original->id);
-                $userProduct->setAttribute('product_id',$request->productId);
-                $userProduct->save();
-
-                return response()->json(['success' => 'Merci !! Vous avez achetez '. $request->quantity .' pièces avec succès.']);
             }
         } catch (Exception $e) {
             return response()->json(['code' => 404, 'message' => 'Something went wrong']);
