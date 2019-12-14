@@ -32,4 +32,8 @@ Route::group(['prefix' => 'product'], function () {
 Route::group(['prefix' => 'user'], function () {
     Route::post('', 'UserController@store');
     Route::delete('/{id}', 'UserController@destroy');
+    Route::get('', 'UserController@index');
+});
+Route::group(['prefix' => 'buy'], function () {
+    Route::post('', 'UserProductsController@store');
 });
