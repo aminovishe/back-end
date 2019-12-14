@@ -8,6 +8,7 @@
 
 namespace App\Repositories;
 
+use App\Product;
 use Illuminate\Database\Eloquent\Model;
 
 class Repository implements RepositoryInterface
@@ -69,5 +70,11 @@ class Repository implements RepositoryInterface
     public function with($relations)
     {
         return $this->model->with($relations);
+    }
+
+    // Decrement quantity
+    public function decrementQuantity(Product $product, $qteBuyed){
+        $product->quantity = $product->quantity - (float)$qteBuyed;
+        $product->save();
     }
 }
