@@ -27,7 +27,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return response()->json($this->model->all());
+        return response()->json($this->model->getListPrroducts());
     }
 
     /**

@@ -10,6 +10,7 @@ namespace App\Repositories;
 
 use App\Product;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Repository implements RepositoryInterface
 {
@@ -76,5 +77,13 @@ class Repository implements RepositoryInterface
     public function decrementQuantity(Product $product, $qteBuyed){
         $product->quantity = $product->quantity - (float)$qteBuyed;
         $product->save();
+    }
+
+    public function getListPrroducts(){
+        $products = DB::table('products')
+            ->join('images', 'products.id', '=', 'images.product_id')
+            ->select('products.*', 'images.name')
+            ->get();
+        return $products;
     }
 }
