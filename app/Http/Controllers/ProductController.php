@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Image;
 use App\Product;
 use Illuminate\Http\Request;
 use App\Repositories\Repository;
@@ -11,10 +12,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class ProductController extends Controller
 {
     protected $model;
+    protected $imageRepo;
 
-    public function __construct(Product $product)
+    public function __construct(Product $product, Image $image)
     {
         $this->model = new Repository($product);
+        $this->imageRepo = new Repository($image);
     }
 
     /**
@@ -45,26 +48,23 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $prodRequest = $request->all();
         $validator = Validator::make($request->all(), [
             'label' => 'required|string|max:255',
             'quantity' => 'required|numeric',
             'price' => 'required|numeric',
-            'image' => 'required',
+            'imageIds' => 'required',
         ]);
+
         if ($validator->fails()) {
             return response()->json(['error' => 'Formulaire non valide']);
         }
 
-        $file      = $request->file('image');
-        $filename  = $file->getClientOriginalName();
-        $extension = $file->getClientOriginalExtension();
-        $picture   = date('His').'-'.$filename;
-        $file->move(public_path('img'), $picture);
-        $prodRequest['image'] = $picture;
-
-        $this->model->create($prodRequest);
-
+        $product = $this->model->create($request->only($this->model->getModel()->fillable));
+        foreach ($request->imageIds as $imageId){
+            $this->imageRepo->update([
+                'product_id' => $product->id
+            ],$imageId);
+        }
         return response()->json(['success' => 'Produit ajouté avec succès']);
     }
 

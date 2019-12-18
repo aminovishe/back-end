@@ -26,7 +26,7 @@ class Product extends Model
      * @var array
      */
     protected $fillable = [
-        'label','price','quantity','image'
+        'label','price','quantity'
     ];
 
     public $timestamps = false;

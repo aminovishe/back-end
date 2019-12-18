@@ -18,7 +18,6 @@ class CreatesProductsTable extends Migration
             $table->string('label',255);
             $table->float('price');
             $table->float('quantity');
-            $table->string('image');
         });
     }
 
