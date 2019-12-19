@@ -55,19 +55,19 @@ class UserProductsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'productId' => 'required|numeric',
-            'quantity' => 'required|numeric',
-            'token' => 'required'
+            'quantity' => 'required|numeric'
         ]);
+        $token = str_replace('Bearer ','', $request->header('Authorization'));
 
         if ($validator->fails()) {
             return response()->json(['error' => 'Erreur !!']);
         }
 
         try {
-            if (!$user = $this->auth->me($request->token)) {
+            if (!$user = $this->auth->me($token)) {
                 return response()->json(['error' => 'Token invalid !!']);
             } else {
-                $user = $this->auth->me($request->token);
+                $user = $this->auth->me($token);
                 $product = $this->productRepo->show($request->productId);
 
                 if (!$product){
